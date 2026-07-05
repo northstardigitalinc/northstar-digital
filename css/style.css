@@ -822,7 +822,7 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
 }
 .s-ctamoon:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; border-radius: 0.5rem; }
 
-/* focus mode — planet zooms in, briefing rises beside it */
+/* focus mode — focused planet fills left side; text renders ON the planet */
 .system__focus-orb {
   position: absolute;
   left: 0; top: 0;
@@ -831,75 +831,93 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
   z-index: 24;
   will-change: transform;
 }
+
+/* Text overlay — centred over the focused orb by JS-set left/top */
 .system__focus {
   position: absolute;
-  inset: 0;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  padding: 0 clamp(0.5rem, 3vw, 3rem);
+  left: 0; top: 0;
+  transform: translate(-50%, -50%);
+  z-index: 31;
   pointer-events: none;
+  text-align: center;
+  /* width is set by JS to ~70 % of focusSize */
 }
 .system__focus-text {
-  max-width: 27rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 480ms var(--ease-emphasized), transform 480ms var(--ease-emphasized);
+  transition: opacity 500ms var(--ease-emphasized);
+  padding: 1.2rem 0.7rem 1.4rem;
+  border-radius: 50%;
+  background: radial-gradient(ellipse 95% 88% at 50% 52%,
+    rgba(4,6,15,0.74) 0%,
+    rgba(4,6,15,0.45) 52%,
+    transparent 100%);
 }
 .system__focus.is-open .system__focus-text {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
-  transition-delay: 280ms;
+  transition-delay: 460ms;  /* wait for orb to nearly arrive before text fades in */
 }
 .system__focus-text h3 {
   font-family: var(--font-serif);
   font-weight: 400;
-  font-size: clamp(1.6rem, 3vw, 2.6rem);
-  margin-bottom: 0.9rem;
+  font-size: clamp(1.0rem, 1.9vw, 1.6rem);
+  margin-bottom: 0.25rem;
+  line-height: 1.22;
+  text-shadow: 0 0 18px rgba(4,6,15,0.95), 0 1px 4px rgba(4,6,15,0.8);
 }
 .system__back {
   display: inline-block;
   background: none;
   border: 0;
-  padding: 0 0 1.2rem;
+  padding: 0 0 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.70rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-dim);
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease-out);
+  text-shadow: 0 0 10px rgba(4,6,15,0.9);
 }
 .system__back:hover { color: var(--gold); }
 
 .system__panel-kicker {
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.15rem;
+  text-shadow: 0 0 12px rgba(4,6,15,0.95);
 }
-.system__panel h3 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
-  margin-bottom: 0.8rem;
+.system__panel-desc {
+  color: var(--ink-dim);
+  font-size: 0.80rem;
+  margin-bottom: 0.5rem;
+  text-wrap: pretty;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 0 10px rgba(4,6,15,0.9), 0 1px 3px rgba(4,6,15,0.7);
 }
-.system__panel-desc { color: var(--ink-dim); font-size: 0.97rem; margin-bottom: 1.3rem; text-wrap: pretty; }
-.system__focus-text .pills { margin: 0 0 1.6rem; }
+.system__focus-text .pills {
+  margin: 0 0 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.system__focus-text .pill {
+  font-size: 0.60rem;
+  padding: 0.2rem 0.55rem;
+}
 
 @media (max-width: 900px) {
   .system__map { aspect-ratio: 1 / 1.15; min-height: 26rem; }
-  .system__focus { align-items: flex-end; padding-bottom: 1.2rem; }
-  .system__focus-text {
-    background: rgba(4, 6, 15, 0.72);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    padding: 1.3rem 1.4rem;
-  }
 }
 
 /* ============ ABOUT ============ */
