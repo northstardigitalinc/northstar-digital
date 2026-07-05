@@ -8,7 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=9">
+<script>
+/* device detection — one URL, adaptive experience */
+(function () {
+  var d = document.documentElement;
+  var touch = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
+  var ua = /Android|iPhone|iPad|iPod|Mobile|Silk/i.test(navigator.userAgent);
+  if (touch) d.classList.add("is-touch");
+  if (ua || (touch && Math.min(screen.width, screen.height) < 820)) d.classList.add("is-mobile");
+})();
+</script>
+<link rel="stylesheet" href="css/style.css?v=10">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 L18.5 13.5 L30 16 L18.5 18.5 L16 30 L13.5 18.5 L2 16 L13.5 13.5 Z' fill='%23E8C87E'/></svg>">
 </head>
 <body data-page="portfolio">
@@ -45,13 +55,17 @@
     </svg>
     <span class="nav__wordmark"><span>NORTHSTAR</span><em>DIGITAL</em></span>
   </a>
-  <nav class="nav__links" aria-label="Primary">
+  <nav class="nav__links" id="nav-links" aria-label="Primary">
     <a href="index.html" data-warp-to="index.html">Home</a>
     <a href="index.html#services" data-warp-to="index.html#services">Services</a>
     <a href="index.html#contact" data-warp-to="index.html#contact">Contact Us</a>
     <a href="portfolio.html" class="is-active">Portfolio</a>
+    <a href="index.html#contact" data-warp-to="index.html#contact" class="nav__links-cta">Start a Project →</a>
   </nav>
   <a href="index.html#contact" data-warp-to="index.html#contact" class="btn btn--ghost nav__cta" data-magnetic>Start a Project</a>
+  <button type="button" class="nav__burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
 <main>
@@ -199,7 +213,7 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
 <script src="js/warp.js?v=7"></script>
 </body>
 </html>

@@ -202,6 +202,33 @@ h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
 .nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
 .nav__links a.is-active { color: var(--gold); }
 .nav__links a.is-active::after { transform: scaleX(1); transform-origin: left; }
+.nav__links-cta { display: none; }
+
+/* hamburger — hidden on desktop, replaces links + CTA on mobile */
+.nav__burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  z-index: 102;
+}
+.nav__burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform 320ms var(--ease-emphasized), opacity 200ms var(--ease-out);
+}
+body.menu-open .nav__burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.menu-open .nav__burger span:nth-child(2) { opacity: 0; }
+body.menu-open .nav__burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ============ BUTTONS ============ */
 .btn {
@@ -1410,8 +1437,51 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
 @media (max-width: 560px) {
   .footer__grid { grid-template-columns: 1fr 1fr; }
 }
+/* horizontal-overflow guard + shrinkable form fields (all sizes) */
+html, body { overflow-x: clip; }
+.contact__grid > * { min-width: 0; }
+.field input, .field select, .field textarea { min-width: 0; }
+
 @media (max-width: 760px) {
-  .nav__links { display: none; }
+  /* nav → hamburger + full-screen overlay menu */
+  .nav__cta { display: none; }
+  .nav__burger { display: flex; }
+  .nav__links {
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.4rem;
+    background: rgba(4, 6, 15, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 360ms var(--ease-emphasized), visibility 0s linear 360ms;
+  }
+  body.menu-open .nav__links {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 360ms var(--ease-emphasized), visibility 0s;
+  }
+  .nav__links a { font-size: 1.35rem; letter-spacing: 0.04em; }
+  .nav__links-cta {
+    display: inline-block;
+    margin-top: 1.2rem;
+    color: var(--gold) !important;
+    font-family: var(--font-display);
+    font-size: 1rem !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase;
+    border: 1px solid rgba(232, 200, 126, 0.45);
+    border-radius: 3rem;
+    padding: 0.85rem 1.8rem;
+  }
+  .nav__links-cta::after { display: none; }
+  body.menu-open { overflow: hidden; }
+
   .service__row { grid-template-columns: 3.4rem 1fr 2rem; }
   .service__tag { display: none; }
   .service__detail p, .service__detail ul { margin-left: 0; padding-left: var(--pad-x); padding-right: var(--pad-x); }
@@ -1422,6 +1492,16 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
   .hero__badge { font-size: 0.68rem; letter-spacing: 0.06em; }
   .hero__scroll { display: none; }
 }
+
+/* ============ TOUCH-DEVICE ADAPTATIONS (html.is-touch set by inline detector) ============ */
+html.is-touch .cursor-glow { display: none; }
+html.is-touch body { -webkit-tap-highlight-color: transparent; }
+/* 16px+ inputs stop iOS Safari from auto-zooming the form on focus */
+html.is-touch .field input,
+html.is-touch .field select,
+html.is-touch .field textarea { font-size: 1rem; }
+/* hover-revealed hints are always readable on touch */
+html.is-touch .s-planet__hint { opacity: 1; }
 
 /* ============ WARP OVERLAY ============ */
 .warp-overlay {

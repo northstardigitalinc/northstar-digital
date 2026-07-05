@@ -5,6 +5,7 @@
   "use strict";
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isTouch = document.documentElement.classList.contains("is-touch");
 
   /* ---------- Starfield canvas ---------- */
   const canvas = document.getElementById("starfield");
@@ -15,7 +16,7 @@
   const mouse = { x: 0.5, y: 0.5 };
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, isTouch ? 1.5 : 2);
     W = canvas.clientWidth;
     H = canvas.clientHeight;
     canvas.width = W * dpr;
@@ -25,7 +26,8 @@
   }
 
   function buildStars() {
-    const count = Math.min(Math.floor((W * H) / 3200), 520);
+    /* touch devices get roughly half the stars — GPU + battery friendly */
+    const count = Math.min(Math.floor((W * H) / (isTouch ? 6000 : 3200)), isTouch ? 240 : 520);
     // real stellar tints: white, ice-blue, cyan, champagne, warm orange
     const TINTS = [
       { rgb: "226, 232, 248", w: 0.55 },
@@ -150,10 +152,11 @@
     // ambient shooting stars — frequent, occasionally in pairs
     (function ambient() {
       spawnShooter();
-      if (Math.random() < 0.35) {
+      if (!isTouch && Math.random() < 0.35) {
         setTimeout(() => spawnShooter(), 250 + Math.random() * 500);
       }
-      setTimeout(ambient, 1200 + Math.random() * 2600);
+      const base = isTouch ? 2600 : 1200;
+      setTimeout(ambient, base + Math.random() * 2600);
     })();
   } else {
     // static star render for reduced motion
@@ -182,6 +185,23 @@
       glow.style.top = e.clientY + "px";
     }
   }, { passive: true });
+
+  /* ---------- Mobile menu (hamburger) ---------- */
+  const burger = document.getElementById("nav-burger");
+  if (burger) {
+    const setMenu = (open) => {
+      document.body.classList.toggle("menu-open", open);
+      burger.setAttribute("aria-expanded", String(open));
+      burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    };
+    burger.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
+    document.querySelectorAll(".nav__links a").forEach((a) =>
+      a.addEventListener("click", () => setMenu(false))
+    );
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setMenu(false);
+    });
+  }
 
   /* ---------- Nav scroll state ---------- */
   const nav = document.getElementById("nav");
