@@ -47,8 +47,8 @@
     raf = requestAnimationFrame(frame);
     const R = mR();
 
-    if (phase === "exit")  t += 0.0167;  // ~2 s at 60 fps
-    if (phase === "enter") t += 0.0167; // ~2 s at 60 fps
+    if (phase === "exit")  t += 0.025;  // ~2 s at 60 fps
+    if (phase === "enter") t += 0.025; // ~2 s at 60 fps
 
     // speed multiplier
     const sp =
