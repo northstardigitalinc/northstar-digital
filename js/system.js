@@ -255,9 +255,9 @@
     /* shift orbit centre right + shrink orbit scale — but NOT during hops
        (orbit is already fully shifted when a hop begins)               */
     if (!hopping) {
-      const targetOrbitX = narrow ? cx : cx * 1.40; /* ≈ 70 % of width */
+      const targetOrbitX = narrow ? cx : cx * 1.48; /* ≈ 74 % of width — shifts system right */
       orbitX    = lerp(cx,   targetOrbitX, e);
-      orbitBase = lerp(base, base * 0.42,  e);
+      orbitBase = lerp(base, base * 0.56,  e); /* 56 % of base — bigger right orbit, less crowding */
       updateRingsAndStar(orbitX, orbitBase);
     }
 
