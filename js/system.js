@@ -131,14 +131,14 @@
     return { x, y, s: 0.78 + depth * 0.34, depth };
   }
 
-  // moon position around the focused planet
+  // moon position around the focused planet — orbit radius slightly outside disc
   function moonPos(pl, idxAmong) {
     const t = focusTarget();
-    const R = focusSize * (1.0 + idxAmong * 0.18); // start outside the disc
+    const R = focusSize * (0.68 + idxAmong * 0.16);
     const x = t.x + Math.cos(pl.angle) * R;
     const y = t.y + Math.sin(pl.angle) * R * TILT;
     const depth = (Math.sin(pl.angle) + 1) / 2;
-    return { x, y, s: 0.62 + depth * 0.22, depth };
+    return { x, y, s: 0.6 + depth * 0.28, depth };
   }
 
   function render(pl, x, y, s, z) {
@@ -153,6 +153,7 @@
   let ft = 0;
   let focusIdx = -1;
   let from = { x: 0, y: 0, s: 0.1 };
+  let hopping = false;
 
   function setPanel(i) {
     const pl = PLANETS[i];
@@ -172,13 +173,18 @@
     if (mode === "in" || mode === "out") return;
     if (mode === "focused") {
       if (i === focusIdx) return;
-      // hop: launch the new focused orb from its current orbital position
-      const pl = PLANETS[i];
-      const p = orbitPos(pl);
-      from = { x: p.x, y: p.y, s: (pl.size * p.s) / focusSize };
+      // hop: old focused orb animates back out, new one zooms in from orbit
+      from = { x: PLANETS[i].cur.x, y: PLANETS[i].cur.y, s: (PLANETS[i].size * PLANETS[i].cur.s) / focusSize };
+      const tgt = focusTarget();
+      PLANETS.forEach((p, k) => {
+        p.hopFrom = k === focusIdx
+          ? { x: tgt.x, y: tgt.y, s: 1, depth: 0.5 }
+          : { x: p.cur.x, y: p.cur.y, s: p.cur.s, depth: 0.5 };
+      });
+      hopping = true;
       focusIdx = i;
       setPanel(i);
-      focusOrb.className = "system__focus-orb " + pl.skin;
+      focusOrb.className = "system__focus-orb " + PLANETS[i].skin;
       retriggerText();
       ft = 0;
       mode = prefersReduced ? "focused" : "in";
@@ -194,7 +200,7 @@
     focusOrb.style.width = focusSize + "px";
     focusOrb.style.height = focusSize + "px";
     focusOrb.style.display = "block";
-    focusOrb.style.zIndex = "15";
+    focusOrb.style.zIndex = "24"; // between far moons (z=20) and near moons (z=27)
     ctaMoon.style.display = "flex";
     map.classList.add("is-focused");
     focusWrap.classList.add("is-open");
@@ -206,6 +212,7 @@
 
   function zoomOut() {
     if (mode !== "focused") return;
+    hopping = false;
     focusWrap.classList.remove("is-open");
     focusWrap.setAttribute("aria-hidden", "true");
     mode = prefersReduced ? "orbit" : "out";
@@ -238,22 +245,29 @@
     ctaMoon.style.zIndex = mDepth > 0.5 ? "28" : "21";
     ctaMoon.style.pointerEvents = e > 0.8 ? "auto" : "none";
 
-    // star dims slightly but keeps running — the system stays alive
-    const starDim = 1 - Math.min(0.45, e * 0.55);
-    star.style.opacity = starDim.toFixed(3);
-    rings.forEach((r) => (r.style.opacity = (starDim * 0.85).toFixed(3)));
+    // star + rings fade as focus takes over
+    const dim = 1 - Math.min(1, e * 1.3);
+    star.style.opacity = dim.toFixed(3);
+    rings.forEach((r) => (r.style.opacity = dim.toFixed(3)));
 
-    // Other planets stay in their star orbits — dim + shrink to show focus
+    // Other planets become moons — orbit the focused planet with proper depth
+    // Orb is at z=24; near-side moons (z=27) pass in front, far-side (z=20) go behind
+    let idxAmong = 0;
     PLANETS.forEach((p, k) => {
       if (k === focusIdx) {
         p.el.style.opacity = Math.max(0, 1 - ft * 6).toFixed(3);
         p.el.style.pointerEvents = "none";
         return;
       }
-      const o = orbitPos(p);
-      const scale = o.s * lerp(1, 0.7, e);
-      render(p, o.x, o.y, scale, 2 + Math.round(o.depth * 8));
-      p.el.style.opacity = lerp(1, 0.45, e).toFixed(3);
+      const o = hopping && p.hopFrom ? p.hopFrom : orbitPos(p);
+      const m = moonPos(p, idxAmong++);
+      const px = lerp(o.x, m.x, e);
+      const py = lerp(o.y, m.y, e);
+      const ps = lerp(o.s, m.s, e);
+      const depth = lerp(o.depth, m.depth, e);
+      const z = e > 0.5 ? (depth > 0.5 ? 27 : 20) : 2 + Math.round(depth * 8);
+      render(p, px, py, ps, z);
+      p.el.style.opacity = "1";
       p.el.style.pointerEvents = "auto";
     });
   }
