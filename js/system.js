@@ -153,7 +153,6 @@
   let ft = 0;
   let focusIdx = -1;
   let from = { x: 0, y: 0, s: 0.1 };
-  let hopping = false; // true while morphing between two focused planets
 
   function setPanel(i) {
     const pl = PLANETS[i];
@@ -173,20 +172,13 @@
     if (mode === "in" || mode === "out") return;
     if (mode === "focused") {
       if (i === focusIdx) return;
-      // hop from one planet to another: launch from its moon position
-      from = { x: PLANETS[i].cur.x, y: PLANETS[i].cur.y, s: (PLANETS[i].size * PLANETS[i].cur.s) / focusSize };
-      const t = focusTarget();
-      PLANETS.forEach((p, k) => {
-        // moons re-shuffle from where they are now; the old focus planet
-        // emerges out of the departing big sphere
-        p.hopFrom = k === focusIdx
-          ? { x: t.x, y: t.y, s: 1, depth: 0.5 }
-          : { x: p.cur.x, y: p.cur.y, s: p.cur.s, depth: 0.5 };
-      });
-      hopping = true;
+      // hop: launch the new focused orb from its current orbital position
+      const pl = PLANETS[i];
+      const p = orbitPos(pl);
+      from = { x: p.x, y: p.y, s: (pl.size * p.s) / focusSize };
       focusIdx = i;
       setPanel(i);
-      focusOrb.className = "system__focus-orb " + PLANETS[i].skin;
+      focusOrb.className = "system__focus-orb " + pl.skin;
       retriggerText();
       ft = 0;
       mode = prefersReduced ? "focused" : "in";
@@ -214,7 +206,6 @@
 
   function zoomOut() {
     if (mode !== "focused") return;
-    hopping = false; // moons return to their true star orbits
     focusWrap.classList.remove("is-open");
     focusWrap.setAttribute("aria-hidden", "true");
     mode = prefersReduced ? "orbit" : "out";
@@ -247,28 +238,22 @@
     ctaMoon.style.zIndex = mDepth > 0.5 ? "28" : "21";
     ctaMoon.style.pointerEvents = e > 0.8 ? "auto" : "none";
 
-    // star + rings fall away; other planets become moons and stay live
-    const dim = 1 - Math.min(1, e * 1.3);
-    star.style.opacity = dim.toFixed(3);
-    rings.forEach((r) => (r.style.opacity = dim.toFixed(3)));
+    // star dims slightly but keeps running — the system stays alive
+    const starDim = 1 - Math.min(0.45, e * 0.55);
+    star.style.opacity = starDim.toFixed(3);
+    rings.forEach((r) => (r.style.opacity = (starDim * 0.85).toFixed(3)));
 
-    let idxAmong = 0;
+    // Other planets stay in their star orbits — dim + shrink to show focus
     PLANETS.forEach((p, k) => {
       if (k === focusIdx) {
         p.el.style.opacity = Math.max(0, 1 - ft * 6).toFixed(3);
         p.el.style.pointerEvents = "none";
         return;
       }
-      const o = hopping && p.hopFrom ? p.hopFrom : orbitPos(p);
-      const m = moonPos(p, idxAmong++);
-      const px = lerp(o.x, m.x, e);
-      const py = lerp(o.y, m.y, e);
-      const ps = lerp(o.s, m.s, e);
-      const depth = lerp(o.depth, m.depth, e);
-      // always above the focused orb (z=15); scale conveys depth instead
-      const z = e > 0.5 ? (depth > 0.5 ? 27 : 20) : 2 + Math.round(depth * 8);
-      render(p, px, py, ps, z);
-      p.el.style.opacity = "1";
+      const o = orbitPos(p);
+      const scale = o.s * lerp(1, 0.7, e);
+      render(p, o.x, o.y, scale, 2 + Math.round(o.depth * 8));
+      p.el.style.opacity = lerp(1, 0.45, e).toFixed(3);
       p.el.style.pointerEvents = "auto";
     });
   }
