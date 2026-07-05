@@ -48,7 +48,7 @@
     const R = mR();
 
     if (phase === "exit")  t += 0.0083;  // ~2 s at 60 fps
-    if (phase === "enter") t += 0.011;
+    if (phase === "enter") t += 0.0083; // ~2 s at 60 fps
 
     // speed multiplier
     const sp =
