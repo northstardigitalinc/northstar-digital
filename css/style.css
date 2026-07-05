@@ -604,78 +604,56 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
 }
 .reveal.is-in { opacity: 1; transform: translateY(0); }
 
-/* ============ SERVICE SYSTEM (orbit map) ============ */
+/* ============ SERVICE PLANETS (floating worlds) ============ */
 .system__wrap { max-width: 80rem; }
-.system__map {
+.system__stage {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9.5;
-  min-height: 24rem;
+  min-height: 27rem;
 }
-/* planets stay clickable in focus mode — they orbit the focused planet */
-.system__star {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--gold);
-  filter: drop-shadow(0 0 18px rgba(232, 200, 126, 0.8)) drop-shadow(0 0 60px rgba(232, 200, 126, 0.35));
-  /* keyframes must carry the centering translate, or the pulse un-centers the star */
-  animation: star-pulse-center 4.5s var(--ease-in-out) infinite;
-  z-index: 12;
-}
-@keyframes star-pulse-center {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  50% { transform: translate(-50%, -50%) scale(0.88); opacity: 0.72; }
-}
-.system__ring {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(233, 236, 245, 0.07);
-  border-radius: 50%;
-  pointer-events: none;
-  transition: border-color var(--duration-slow) var(--ease-out);
-}
-.system__ring.is-active { border-color: rgba(232, 200, 126, 0.35); }
 
+/* ---- planet button — positioned by JS left/top %, CSS-transitioned ---- */
 .s-planet {
   position: absolute;
   left: 0; top: 0;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.85rem;
   background: none;
   border: 0;
-  padding: 0.4rem;
+  padding: 0;
   cursor: pointer;
-  will-change: transform;
+  z-index: 10;
+  transition:
+    left 900ms var(--ease-emphasized),
+    top  900ms var(--ease-emphasized);
 }
+.s-planet:focus-visible { outline: 1px solid var(--gold); outline-offset: 6px; border-radius: 0.5rem; }
+
+/* gentle vertical drift — lives on an inner wrapper so it never fights the position transition */
+.s-planet__float {
+  position: relative;
+  animation: planet-float var(--float-t, 7s) ease-in-out var(--float-d, 0s) infinite;
+}
+@keyframes planet-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-13px); }
+}
+
 .s-planet__orb {
   display: block;
-  border-radius: 50%;
   position: relative;
-  transition: box-shadow var(--duration-default) var(--ease-out);
+  border-radius: 50%;
+  transition:
+    width  900ms var(--ease-emphasized),
+    height 900ms var(--ease-emphasized),
+    box-shadow var(--duration-default) var(--ease-out);
 }
-.s-planet__label {
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  white-space: nowrap;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-.s-planet:hover .s-planet__label,
-.s-planet.is-selected .s-planet__label { color: var(--gold); }
-.s-planet.is-selected .s-planet__orb {
-  box-shadow: 0 0 0 3px rgba(4, 6, 15, 1), 0 0 0 4px var(--gold), 0 0 34px rgba(232, 200, 126, 0.4);
-}
-.s-planet:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; border-radius: 0.5rem; }
-
-/* planet skins — every world has terrain character */
-[class*="s-orb--"]::before {
-  /* shared sphere lighting: sun highlight + dark limb */
+/* shared sphere lighting: sun highlight + dark limb */
+.s-planet__orb::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -686,238 +664,282 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
   pointer-events: none;
   z-index: 2;
 }
-
-/* Websites — terrestrial ocean world with continents & clouds */
-.s-orb--web {
-  background:
-    radial-gradient(ellipse 34% 16% at 44% 22%, rgba(224, 250, 244, 0.55) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 18% at 60% 66%, rgba(224, 250, 244, 0.3) 0%, transparent 70%),
-    radial-gradient(circle at 63% 55%, #2f8f68 0% 11%, transparent 30%),
-    radial-gradient(circle at 30% 60%, #2c8161 0% 8%, transparent 24%),
-    radial-gradient(circle at 68% 28%, #35977a 0% 7%, transparent 20%),
-    radial-gradient(circle at 45% 78%, #2a7a5e 0% 6%, transparent 18%),
-    radial-gradient(circle at 32% 28%, #8fdcd0 0%, #257f92 44%, #123c50 74%, #071018 100%);
-  box-shadow: 0 0 26px rgba(64, 190, 175, 0.35);
+.s-planet:hover .s-planet__orb {
+  box-shadow: 0 0 0 2px rgba(232, 200, 126, 0.55), 0 0 44px rgba(232, 200, 126, 0.3);
 }
 
-/* Social Ads — banded rose gas giant with a storm eye */
-.s-orb--social {
+/* "Click me to learn more" — printed on the planet face */
+.s-planet__hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 50%;
+  z-index: 5;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.88);
+  background: radial-gradient(circle at 50% 50%, rgba(4, 6, 15, 0.58) 0%, rgba(4, 6, 15, 0.26) 55%, transparent 78%);
+  text-shadow: 0 1px 8px rgba(4, 6, 15, 0.95);
+  transition: opacity 320ms var(--ease-out), color var(--duration-fast) var(--ease-out);
+  pointer-events: none;
+}
+.s-planet:hover .s-planet__hint { color: var(--gold); }
+.system__stage.is-open .s-planet__hint { opacity: 0; }
+
+/* service name under the planet */
+.s-planet__label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-out), font-size 900ms var(--ease-emphasized);
+  text-shadow: 0 2px 10px rgba(4, 6, 15, 0.9);
+}
+.s-planet:hover .s-planet__label,
+.s-planet.is-active .s-planet__label { color: var(--gold); }
+.system__stage.is-open .s-planet:not(.is-active) .s-planet__label { font-size: 0.62rem; }
+
+/* ---- moons — a rotating path box that scales with the orb, always spinning ---- */
+.s-moonpath {
+  position: absolute;
+  inset: -24%;
+  animation: moon-spin var(--moon-t, 9s) linear infinite;
+  pointer-events: none;
+  z-index: 6;
+}
+.s-moonpath--b {
+  inset: -42%;
+  animation-direction: reverse;
+  animation-duration: var(--moon-t2, 14s);
+}
+.s-moonpath::before {
+  content: "";
+  position: absolute;
+  right: 0; top: 50%;
+  width: 9%; height: 9%;
+  min-width: 7px; min-height: 7px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e6e9f2 0%, #8a90a4 52%, #23262f 100%);
+  box-shadow: 0 0 10px rgba(200, 210, 235, 0.35);
+}
+.s-moonpath--b::before { width: 6.5%; height: 6.5%; min-width: 5px; min-height: 5px; }
+@keyframes moon-spin { to { transform: rotate(1turn); } }
+
+/* ---- planet skins ---- */
+/* Earth — Website Development: blue marble, continents, cloud streaks */
+.p-earth {
   background:
-    radial-gradient(circle at 63% 58%, rgba(255, 214, 232, 0.65) 0% 5%, rgba(214, 108, 158, 0.4) 9%, transparent 16%),
-    repeating-linear-gradient(170deg,
-      rgba(255, 170, 205, 0.3) 0% 7%,
-      rgba(112, 36, 82, 0.38) 7% 15%,
-      rgba(214, 96, 148, 0.24) 15% 23%,
-      rgba(84, 26, 62, 0.34) 23% 31%),
-    radial-gradient(circle at 32% 28%, #f7a8c8 0%, #b44777 46%, #521d3f 76%, #12040e 100%);
-  box-shadow: 0 0 26px rgba(220, 100, 150, 0.35);
+    radial-gradient(ellipse 34% 14% at 44% 22%, rgba(240, 250, 252, 0.6) 0%, transparent 70%),
+    radial-gradient(ellipse 42% 15% at 58% 64%, rgba(240, 250, 252, 0.35) 0%, transparent 70%),
+    radial-gradient(circle at 63% 52%, #3d8f4e 0% 11%, transparent 30%),
+    radial-gradient(circle at 30% 60%, #2f7a44 0% 9%, transparent 24%),
+    radial-gradient(circle at 68% 26%, #46995c 0% 7%, transparent 20%),
+    radial-gradient(circle at 44% 80%, #2b6e3f 0% 6%, transparent 17%),
+    radial-gradient(circle at 32% 28%, #a8d8f0 0%, #2f7fb8 44%, #143a63 76%, #060d1a 100%);
+  box-shadow: 0 0 28px rgba(90, 170, 230, 0.4);
 }
 
-/* Google Business — glacial water world with polar caps */
-.s-orb--gbp {
+/* Mars — Google & Search: rust world, dark maria, polar cap */
+.p-mars {
   background:
-    radial-gradient(ellipse 62% 22% at 50% 5%, rgba(242, 250, 255, 0.85) 0%, transparent 65%),
-    radial-gradient(ellipse 52% 18% at 52% 96%, rgba(232, 246, 255, 0.55) 0%, transparent 65%),
-    repeating-linear-gradient(94deg,
-      rgba(205, 232, 255, 0.16) 0% 9%,
-      transparent 9% 22%,
-      rgba(170, 210, 250, 0.12) 22% 30%),
-    radial-gradient(circle at 32% 28%, #d9eaff 0%, #6d9cd9 44%, #274a80 76%, #060b18 100%);
-  box-shadow: 0 0 26px rgba(140, 180, 255, 0.35);
+    radial-gradient(ellipse 40% 13% at 50% 5%, rgba(245, 246, 248, 0.8) 0%, transparent 62%),
+    radial-gradient(circle at 60% 55%, rgba(92, 36, 18, 0.55) 0% 11%, transparent 27%),
+    radial-gradient(circle at 34% 42%, rgba(106, 44, 20, 0.5) 0% 8%, transparent 22%),
+    radial-gradient(circle at 56% 76%, rgba(70, 28, 14, 0.45) 0% 7%, transparent 18%),
+    radial-gradient(circle at 32% 28%, #f2a578 0%, #c05f30 46%, #63260f 78%, #150502 100%);
+  box-shadow: 0 0 26px rgba(232, 122, 70, 0.4);
 }
 
-/* Google Ads — volcanic ember world with dark maria & lava glow */
-.s-orb--gads {
+/* Jupiter — AI Automation: banded giant with the Great Red Spot */
+.p-jupiter {
   background:
-    radial-gradient(circle at 57% 68%, rgba(255, 130, 40, 0.7) 0% 4%, rgba(255, 96, 24, 0.3) 8%, transparent 15%),
-    radial-gradient(circle at 38% 46%, rgba(52, 16, 5, 0.62) 0% 10%, transparent 26%),
-    radial-gradient(circle at 70% 34%, rgba(64, 20, 7, 0.55) 0% 8%, transparent 21%),
-    radial-gradient(circle at 26% 72%, rgba(255, 150, 60, 0.35) 0% 3%, transparent 10%),
-    radial-gradient(circle at 32% 28%, #ffc490 0%, #cf6428 44%, #5f250e 76%, #150602 100%);
-  box-shadow: 0 0 26px rgba(230, 130, 60, 0.4);
+    radial-gradient(ellipse 15% 9% at 64% 63%, rgba(210, 90, 56, 0.9) 0% 42%, transparent 78%),
+    repeating-linear-gradient(178deg,
+      rgba(246, 228, 200, 0.42) 0% 6%,
+      rgba(152, 104, 62, 0.44) 6% 12%,
+      rgba(230, 198, 158, 0.34) 12% 19%,
+      rgba(122, 78, 44, 0.4) 19% 26%,
+      rgba(240, 218, 186, 0.3) 26% 33%),
+    radial-gradient(circle at 32% 28%, #f4dfc0 0%, #c99a64 46%, #6b4626 78%, #140b04 100%);
+  box-shadow: 0 0 32px rgba(226, 178, 120, 0.45);
 }
 
-/* AI Automation — golden banded gas giant, ringed */
-.s-orb--ai {
+/* Uranus — Social Ads: pale cyan ice giant with its near-vertical ring */
+.p-uranus {
   background:
-    repeating-linear-gradient(172deg,
-      rgba(250, 232, 184, 0.3) 0% 8%,
-      rgba(118, 78, 28, 0.34) 8% 15%,
-      rgba(226, 178, 96, 0.24) 15% 24%,
-      rgba(94, 62, 22, 0.3) 24% 32%),
-    radial-gradient(circle at 32% 28%, #f8e6b8 0%, #cfa254 46%, #684818 77%, #151002 100%);
-  box-shadow: 0 0 30px rgba(232, 200, 126, 0.45);
+    radial-gradient(ellipse 70% 30% at 50% 20%, rgba(232, 255, 255, 0.32) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 26% at 50% 78%, rgba(150, 225, 235, 0.18) 0%, transparent 70%),
+    radial-gradient(circle at 32% 28%, #d9f7f9 0%, #7fd0da 46%, #2a6f86 78%, #06141c 100%);
+  box-shadow: 0 0 28px rgba(120, 212, 226, 0.4);
 }
-.s-orb--ai::after {
-  /* saturn ring — sits outside the clipped sphere */
+.p-uranus::after {
   content: "";
   position: absolute;
   left: 50%; top: 50%;
-  width: 185%; height: 58%;
-  transform: translate(-50%, -50%) rotate(-16deg);
+  width: 168%; height: 44%;
+  transform: translate(-50%, -50%) rotate(78deg);
   border-radius: 50%;
-  border: 2px solid rgba(232, 200, 126, 0.55);
-  border-top-color: rgba(232, 200, 126, 0.12);
+  border: 2px solid rgba(180, 235, 245, 0.42);
+  border-left-color: rgba(180, 235, 245, 0.08);
   pointer-events: none;
   z-index: 3;
 }
 
-/* decorative moon circling each planet in orbit view */
-.s-moon {
+/* ---- info panel — slides in on the left when a planet is opened ---- */
+.system__info {
   position: absolute;
-  left: 50%; top: 50%;
-  width: 7px; height: 7px;
-  margin: -3.5px 0 0 -3.5px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #dcdfe8 0%, #767c8e 55%, #23262f 100%);
-  animation: moon-orbit var(--moon-t, 6s) linear infinite;
-  pointer-events: none;
-  z-index: 4;
-}
-@keyframes moon-orbit {
-  0%   { transform: rotate(0turn) translateX(var(--moon-r, 24px)) scale(1); opacity: 1; }
-  49%  { opacity: 0.95; }
-  50%  { transform: rotate(0.5turn) translateX(var(--moon-r, 24px)) scale(0.72); opacity: 0.45; }
-  100% { transform: rotate(1turn) translateX(var(--moon-r, 24px)) scale(1); opacity: 1; }
-}
-.system__map.is-focused .s-planet .s-moon { display: none; }
-
-/* "Get Service Now" moon — orbits the focused planet */
-.s-ctamoon {
-  position: absolute;
-  left: 0; top: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: 0;
-  padding: 0.4rem;
-  cursor: pointer;
-  will-change: transform;
-}
-.s-ctamoon__orb {
-  display: block;
-  border-radius: 50%;
-  position: relative;
-  background:
-    radial-gradient(circle at 40% 55%, rgba(60, 64, 78, 0.85) 0% 9%, transparent 22%),
-    radial-gradient(circle at 62% 30%, rgba(56, 60, 74, 0.7) 0% 7%, transparent 18%),
-    radial-gradient(circle at 35% 30%, #e6e9f2 0%, #8a90a4 48%, #2b2e3a 100%);
-  box-shadow: 0 0 18px rgba(200, 210, 235, 0.3);
-  transition: box-shadow var(--duration-default) var(--ease-out);
-}
-.s-ctamoon:hover .s-ctamoon__orb {
-  box-shadow: 0 0 0 2px var(--gold), 0 0 30px rgba(232, 200, 126, 0.5);
-}
-.s-ctamoon__label {
-  font-family: var(--font-display);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-  white-space: nowrap;
-  text-shadow: 0 2px 12px rgba(4, 6, 15, 0.9);
-}
-.s-ctamoon:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; border-radius: 0.5rem; }
-
-/* focus mode — focused planet fills left side; text renders ON the planet */
-.system__focus-orb {
-  position: absolute;
-  left: 0; top: 0;
-  border-radius: 50%;
-  display: none;
-  z-index: 24;
-  will-change: transform;
-}
-
-/* Text overlay — centred over the focused orb by JS-set left/top */
-.system__focus {
-  position: absolute;
-  left: 0; top: 0;
-  transform: translate(-50%, -50%);
-  z-index: 31;
-  pointer-events: none;
-  text-align: center;
-  /* width is set by JS to ~70 % of focusSize */
-}
-.system__focus-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
+  left: 3%;
+  top: 50%;
+  width: 46%;
+  max-width: 34rem;
+  transform: translateY(-50%) translateX(-18px);
   opacity: 0;
-  transition: opacity 500ms var(--ease-emphasized);
-  padding: 1.2rem 0.7rem 1.4rem;
-  border-radius: 50%;
-  background: radial-gradient(ellipse 95% 88% at 50% 52%,
-    rgba(4,6,15,0.74) 0%,
-    rgba(4,6,15,0.45) 52%,
-    transparent 100%);
+  visibility: hidden;
+  z-index: 20;
+  transition:
+    opacity 500ms var(--ease-emphasized),
+    transform 500ms var(--ease-emphasized),
+    visibility 0s linear 500ms;
 }
-.system__focus.is-open .system__focus-text {
+.system__stage.is-open .system__info {
   opacity: 1;
-  pointer-events: auto;
-  transition-delay: 460ms;  /* wait for orb to nearly arrive before text fades in */
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+  transition:
+    opacity 640ms var(--ease-emphasized) 300ms,
+    transform 640ms var(--ease-emphasized) 300ms,
+    visibility 0s;
 }
-.system__focus-text h3 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-size: clamp(1.0rem, 1.9vw, 1.6rem);
-  margin-bottom: 0.25rem;
-  line-height: 1.22;
-  text-shadow: 0 0 18px rgba(4,6,15,0.95), 0 1px 4px rgba(4,6,15,0.8);
-}
+
 .system__back {
   display: inline-block;
   background: none;
   border: 0;
-  padding: 0 0 0.5rem;
+  padding: 0 0 1rem;
   font-family: var(--font-display);
-  font-size: 0.70rem;
-  letter-spacing: 0.14em;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-dim);
+  color: var(--ink-faint);
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease-out);
-  text-shadow: 0 0 10px rgba(4,6,15,0.9);
 }
 .system__back:hover { color: var(--gold); }
 
-.system__panel-kicker {
+.system__kicker {
   font-family: var(--font-display);
-  font-size: 0.64rem;
-  letter-spacing: 0.24em;
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 0.15rem;
-  text-shadow: 0 0 12px rgba(4,6,15,0.95);
+  margin-bottom: 0.9rem;
 }
-.system__panel-desc {
-  color: var(--ink-dim);
-  font-size: 0.80rem;
-  margin-bottom: 0.5rem;
-  text-wrap: pretty;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-shadow: 0 0 10px rgba(4,6,15,0.9), 0 1px 3px rgba(4,6,15,0.7);
-}
-.system__focus-text .pills {
-  margin: 0 0 0.6rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-.system__focus-text .pill {
-  font-size: 0.60rem;
-  padding: 0.2rem 0.55rem;
+.system__kicker::after {
+  content: '';
+  display: block;
+  width: 2.4rem;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.45;
+  margin-top: 0.6rem;
 }
 
+/* service name — font overridden per-service below */
+.system__info h3 {
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.9vw, 2.5rem);
+  line-height: 1.14;
+  margin-bottom: 1rem;
+}
+.system__info[data-svc="ai"] h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+  font-size: clamp(2.1rem, 3.8vw, 3.3rem);
+}
+.system__info[data-svc="social"] h3 {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+.system__info[data-svc="google"] h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.system__info[data-svc="web"] h3 {
+  font-family: 'DM Serif Display', serif;
+}
+
+.system__desc {
+  color: var(--ink-dim);
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  line-height: 1.7;
+  margin-bottom: 1.1rem;
+  text-wrap: pretty;
+  max-width: 46ch;
+}
+
+.system__info .pills {
+  margin: 0 0 1.4rem;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.system__info .pill {
+  font-size: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  letter-spacing: 0.12em;
+  border: 1px solid rgba(232, 200, 126, 0.35);
+  background: rgba(232, 200, 126, 0.07);
+  color: rgba(232, 200, 126, 0.9);
+  border-radius: 20px;
+}
+
+.system__ctas {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  flex-wrap: wrap;
+}
+.system__more {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.system__more:hover { color: var(--gold); }
+
 @media (max-width: 900px) {
-  .system__map { aspect-ratio: 1 / 1.15; min-height: 26rem; }
+  .system__stage {
+    aspect-ratio: auto;
+    min-height: 0;
+    height: 36rem;
+    transition: height 900ms var(--ease-emphasized);
+  }
+  .system__stage.is-open { height: 49rem; }
+  .system__info {
+    left: 50%;
+    top: 55%;
+    width: 92%;
+    transform: translate(-50%, -50%) translateY(14px);
+    text-align: center;
+  }
+  .system__stage.is-open .system__info { transform: translate(-50%, -50%); }
+  .system__kicker::after { margin-left: auto; margin-right: auto; }
+  .system__desc { margin-left: auto; margin-right: auto; }
+  .system__info .pills, .system__ctas { justify-content: center; }
 }
 
 /* ============ ABOUT ============ */

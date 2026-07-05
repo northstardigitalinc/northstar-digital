@@ -7,8 +7,8 @@
 <meta name="description" content="NorthStar Digital is a premium digital marketing agency specializing in AI-driven automation, strategic social media advertising, Google presence management, and custom website development to scale business revenue.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=7">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;450;500;600&family=Bebas+Neue&family=Playfair+Display:ital@1&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=9">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 L18.5 13.5 L30 16 L18.5 18.5 L16 30 L13.5 18.5 L2 16 L13.5 13.5 Z' fill='%23E8C87E'/></svg>">
 </head>
 <body>
@@ -128,44 +128,27 @@
     </div>
   </div>
 
-  <!-- ======= SERVICE SYSTEM (interactive orbit map) ======= -->
+  <!-- ======= SERVICE PLANETS (floating worlds) ======= -->
   <section class="system" id="system">
     <div class="section-head reveal">
       <p class="kicker">01 — The System</p>
-      <h2>Four services. <em>One orbit.</em></h2>
-      <p class="section-sub">Everything in our system orbits one thing: your growth. Select a planet to explore the service.</p>
+      <h2>Four services. <em>Four worlds.</em></h2>
+      <p class="section-sub">Every service is its own world. Click a planet to explore what it can do for your business.</p>
     </div>
     <div class="system__wrap reveal">
-      <div class="system__map" id="system-map" role="group" aria-label="Interactive map of NorthStar services">
-        <div class="system__star" aria-hidden="true">
-          <svg class="system__star-logo" viewBox="0 0 40 40" width="54" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20,2 L21.9,15.4 L25.7,14.3 L24.6,18.1 L38,20 L24.6,21.9 L25.7,25.7 L21.9,24.6 L20,38 L18.1,24.6 L14.3,25.7 L15.4,21.9 L2,20 L15.4,18.1 L14.3,14.3 L18.1,15.4 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="rgba(232,200,126,0.08)"/>
-            <line x1="20" y1="20" x2="25.7" y2="14.3" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
-            <line x1="20" y1="20" x2="25.7" y2="25.7" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
-            <line x1="20" y1="20" x2="14.3" y2="25.7" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
-            <line x1="20" y1="20" x2="14.3" y2="14.3" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
-            <line x1="20" y1="20" x2="20"  y2="2"  stroke="currentColor" stroke-width="0.7" opacity="0.4"/>
-            <line x1="20" y1="20" x2="38"  y2="20" stroke="currentColor" stroke-width="0.7" opacity="0.4"/>
-            <line x1="20" y1="20" x2="20"  y2="38" stroke="currentColor" stroke-width="0.7" opacity="0.4"/>
-            <line x1="20" y1="20" x2="2"   y2="20" stroke="currentColor" stroke-width="0.7" opacity="0.4"/>
-            <path d="M25.7,14.3 L25.7,25.7 L14.3,25.7 L14.3,14.3 Z" stroke="currentColor" stroke-width="0.7" fill="none" opacity="0.45"/>
-          </svg>
-        </div>
-        <span class="system__focus-orb" id="system-focus-orb" aria-hidden="true"></span>
-        <button type="button" class="s-ctamoon" id="cta-moon" data-calendly aria-label="Get this service now — book a free discovery call">
-          <span class="s-ctamoon__orb"></span>
-          <span class="s-ctamoon__label">Get Service Now</span>
-        </button>
-        <div class="system__focus" id="system-focus" aria-hidden="true" aria-live="polite">
-          <div class="system__focus-text">
-            <button type="button" class="system__back" id="system-back">← Back to the system</button>
-            <p class="system__panel-kicker" id="sp-kicker"></p>
-            <h3 id="sp-name"></h3>
-            <p class="system__panel-desc" id="sp-desc"></p>
-            <div class="pills" id="sp-tags"></div>
-            <a class="btn btn--gold" href="#services" id="sp-cta">Explore this service<span class="btn__arrow">→</span></a>
+      <div class="system__stage" id="system-stage" role="group" aria-label="Interactive map of NorthStar services">
+        <div class="system__info" id="system-info" aria-hidden="true" aria-live="polite">
+          <button type="button" class="system__back" id="system-back">← All services</button>
+          <p class="system__kicker" id="sp-kicker"></p>
+          <h3 id="sp-name"></h3>
+          <p class="system__desc" id="sp-desc"></p>
+          <div class="pills" id="sp-tags"></div>
+          <div class="system__ctas">
+            <a href="#booking" class="btn btn--gold" data-calendly id="sp-book">Get This Service<span class="btn__arrow">→</span></a>
+            <a href="#services" class="system__more" id="sp-cta">Full details ↓</a>
           </div>
         </div>
+        <!-- planet buttons injected by js/system.js -->
       </div>
     </div>
   </section>
@@ -495,7 +478,7 @@
 <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <script src="js/main.js?v=3"></script>
-<script src="js/system.js?v=10"></script>
+<script src="js/system.js?v=12"></script>
 <script src="js/journey.js?v=5"></script>
 <script src="js/warp.js?v=7"></script>
 </body>
