@@ -134,11 +134,11 @@
   // moon position around the focused planet
   function moonPos(pl, idxAmong) {
     const t = focusTarget();
-    const R = focusSize * (0.66 + idxAmong * 0.13);
+    const R = focusSize * (1.0 + idxAmong * 0.18); // start outside the disc
     const x = t.x + Math.cos(pl.angle) * R;
     const y = t.y + Math.sin(pl.angle) * R * TILT;
     const depth = (Math.sin(pl.angle) + 1) / 2;
-    return { x, y, s: 0.7 + depth * 0.25, depth };
+    return { x, y, s: 0.62 + depth * 0.22, depth };
   }
 
   function render(pl, x, y, s, z) {
@@ -202,6 +202,7 @@
     focusOrb.style.width = focusSize + "px";
     focusOrb.style.height = focusSize + "px";
     focusOrb.style.display = "block";
+    focusOrb.style.zIndex = "15";
     ctaMoon.style.display = "flex";
     map.classList.add("is-focused");
     focusWrap.classList.add("is-open");
@@ -264,7 +265,7 @@
       const py = lerp(o.y, m.y, e);
       const ps = lerp(o.s, m.s, e);
       const depth = lerp(o.depth, m.depth, e);
-      // in front of the big planet on the near side, behind it on the far side
+      // always above the focused orb (z=15); scale conveys depth instead
       const z = e > 0.5 ? (depth > 0.5 ? 27 : 20) : 2 + Math.round(depth * 8);
       render(p, px, py, ps, z);
       p.el.style.opacity = "1";
