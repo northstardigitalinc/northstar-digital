@@ -17,7 +17,7 @@
 
   const PLANETS = [
     {
-      id: "ai", label: "AI Automation", skin: "s-orb--ai", size: 38,
+      id: "ai", label: "AI Automation", skin: "s-orb--ai", size: 62,
       r: 0.34, phase: 0.6,
       kicker: "S·01 — AI Automation for Social Media",
       name: "Your brand, always on.",
@@ -25,7 +25,7 @@
       tags: ["AI Scheduling", "Auto-Engagement", "Analytics", "Audience Growth"]
     },
     {
-      id: "social", label: "Social Ads", skin: "s-orb--social", size: 32,
+      id: "social", label: "Social Ads", skin: "s-orb--social", size: 54,
       r: 0.52, phase: 2.4,
       kicker: "S·02 — Social Media Promotions & Ads",
       name: "Precision targeting. Maximum returns.",
@@ -33,7 +33,7 @@
       tags: ["Instagram", "Facebook", "TikTok", "LinkedIn"]
     },
     {
-      id: "google", label: "Google", skin: "s-orb--gbp", size: 30,
+      id: "google", label: "Google", skin: "s-orb--gbp", size: 50,
       r: 0.70, phase: 4.1,
       kicker: "S·03 — Google Page Setup & Google Ads",
       name: "Capture intent. Win the search.",
@@ -41,7 +41,7 @@
       tags: ["Business Profile", "Search Ads", "Display", "Shopping"]
     },
     {
-      id: "web", label: "Websites", skin: "s-orb--web", size: 34,
+      id: "web", label: "Websites", skin: "s-orb--web", size: 58,
       r: 0.90, phase: 1.3,
       kicker: "S·04 — Website Development",
       name: "Every pixel deliberate.",
