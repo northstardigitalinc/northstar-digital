@@ -47,7 +47,7 @@
     raf = requestAnimationFrame(frame);
     const R = mR();
 
-    if (phase === "exit")  t += 0.016;
+    if (phase === "exit")  t += 0.0083;  // ~2 s at 60 fps
     if (phase === "enter") t += 0.011;
 
     // speed multiplier
@@ -78,13 +78,6 @@
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
-    }
-
-    // gold flash at peak of exit before navigating
-    if (phase === "exit" && t > 0.78) {
-      const fade = Math.min(1, (t - 0.78) * 4.5);
-      ctx.fillStyle = `rgba(232,200,126,${fade})`;
-      ctx.fillRect(0, 0, W, H);
     }
 
     if (phase === "exit" && t >= 1) {
