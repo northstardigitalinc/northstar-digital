@@ -17,44 +17,36 @@
 
   const PLANETS = [
     {
-      id: "web", label: "Websites", skin: "s-orb--web", size: 34,
-      r: 0.34, phase: 0.6,
-      kicker: "S·01 — Website Creation & Design",
-      name: "Websites built to convert.",
-      desc: "Fast, modern, mobile-friendly websites that turn visitors into customers — business sites, landing pages, e-commerce and portfolios. Live in 2–6 weeks with SEO structure, analytics and CMS training included.",
-      tags: ["WordPress", "Shopify", "Webflow", "Custom"]
-    },
-    {
-      id: "social", label: "Social Ads", skin: "s-orb--social", size: 30,
-      r: 0.5, phase: 2.4,
-      kicker: "S·02 — Social Media Advertising",
-      name: "The right people, the right time.",
-      desc: "Fully managed paid campaigns — audience research, creative, pixel setup, A/B testing and plain-English reporting across Facebook, Instagram, TikTok, LinkedIn and Pinterest.",
-      tags: ["Meta", "TikTok", "LinkedIn", "Pinterest"]
-    },
-    {
-      id: "gbp", label: "Google Business", skin: "s-orb--gbp", size: 26,
-      r: 0.66, phase: 4.1,
-      kicker: "S·03 — Google Business Profile",
-      name: "Own your local search.",
-      desc: "A fully optimized profile built to show up when nearby customers search — keyword-rich description, photos, posts, review strategy and Q&A, set up in 5–10 business days.",
-      tags: ["Maps", "Search", "Reviews"]
-    },
-    {
-      id: "gads", label: "Google Ads", skin: "s-orb--gads", size: 32,
-      r: 0.82, phase: 1.3,
-      kicker: "S·04 — Google Ads Management",
-      name: "Top of search, on demand.",
-      desc: "Search, Display, Shopping and Performance Max campaigns structured for efficiency — keyword strategy, tested ad copy, bid management and remarketing, optimized continuously.",
-      tags: ["Search", "Shopping", "Performance Max"]
-    },
-    {
       id: "ai", label: "AI Automation", skin: "s-orb--ai", size: 38,
-      r: 0.98, phase: 5.2,
-      kicker: "S·05 — AI Marketing Automation",
-      name: "Marketing on autopilot.",
-      desc: "Bid automation, instant lead follow-up by email or SMS, on-site chatbots for lead qualification and scheduled reporting — wired into your systems in a 2–4 week build.",
-      tags: ["Zapier", "Make", "CRM", "Chatbots"]
+      r: 0.34, phase: 0.6,
+      kicker: "S·01 — AI Automation for Social Media",
+      name: "Your brand, always on.",
+      desc: "Intelligent automation that keeps your social presence active, engaging, and growing — 24/7, without the manual overhead. AI-driven content scheduling, automated engagement, and algorithmic audience growth.",
+      tags: ["AI Scheduling", "Auto-Engagement", "Analytics", "Audience Growth"]
+    },
+    {
+      id: "social", label: "Social Ads", skin: "s-orb--social", size: 32,
+      r: 0.52, phase: 2.4,
+      kicker: "S·02 — Social Media Promotions & Ads",
+      name: "Precision targeting. Maximum returns.",
+      desc: "Data-driven advertising campaigns across Instagram, Facebook, TikTok, LinkedIn, and beyond. We architect creative that converts — built around your audience's psychology and your competitors' gaps.",
+      tags: ["Instagram", "Facebook", "TikTok", "LinkedIn"]
+    },
+    {
+      id: "google", label: "Google", skin: "s-orb--gbp", size: 30,
+      r: 0.70, phase: 4.1,
+      kicker: "S·03 — Google Page Setup & Google Ads",
+      name: "Capture intent. Win the search.",
+      desc: "Complete Google Business Profile optimization paired with high-intent search and display advertising. Capture customers at the exact moment they're ready to buy.",
+      tags: ["Business Profile", "Search Ads", "Display", "Shopping"]
+    },
+    {
+      id: "web", label: "Websites", skin: "s-orb--web", size: 34,
+      r: 0.90, phase: 1.3,
+      kicker: "S·04 — Website Development",
+      name: "Every pixel deliberate.",
+      desc: "Bespoke websites designed and developed from the ground up — built for performance, conversion, and brand authority. No templates, no compromises. Every interaction guides visitors toward action.",
+      tags: ["Custom Design", "Mobile-First", "SEO-Ready", "CMS"]
     }
   ];
 
