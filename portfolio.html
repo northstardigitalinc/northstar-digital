@@ -118,7 +118,11 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, transparent 55%, rgba(7,11,24,0.35) 100%);
-  pointer-events: none;
+  cursor: pointer;
+  transition: background 0.25s var(--ease-out);
+}
+.proj-browser__overlay:hover {
+  background: linear-gradient(to bottom, rgba(232,200,126,0.04) 0%, rgba(7,11,24,0.45) 100%);
 }
 
 /* Project info */
@@ -333,7 +337,7 @@
                     title="Tadka By Hanu website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
-            <div class="proj-browser__overlay"></div>
+            <a class="proj-browser__overlay" href="https://northstardigitalinc.github.io/TadkaByHanu/" target="_blank" rel="noopener" aria-label="Open Tadka By Hanu live site"></a>
           </div>
         </div>
         <div class="proj-info">
@@ -371,7 +375,7 @@
                     title="PEL website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
-            <div class="proj-browser__overlay"></div>
+            <a class="proj-browser__overlay" href="https://northstardigitalinc.github.io/PEL/index.html" target="_blank" rel="noopener" aria-label="Open PEL live site"></a>
           </div>
         </div>
         <div class="proj-info">
@@ -409,7 +413,7 @@
                     title="401 Property Services website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
-            <div class="proj-browser__overlay"></div>
+            <a class="proj-browser__overlay" href="https://northstardigitalinc.github.io/401-property-services/" target="_blank" rel="noopener" aria-label="Open 401 Property Services live site"></a>
           </div>
         </div>
         <div class="proj-info">
