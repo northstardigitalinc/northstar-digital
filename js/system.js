@@ -83,7 +83,7 @@
   SERVICES.forEach((s, i) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "s-planet";
+    btn.className = "s-planet" + (s.id === "ai" || s.id === "web" ? " s-planet--horiz" : "");
     btn.setAttribute("aria-label", `${s.label} — click to learn more`);
     btn.innerHTML =
       `<span class="s-planet__float" style="--float-t:${(6.2 + i * 1.3).toFixed(1)}s;--float-d:${(-i * 1.8).toFixed(1)}s">` +

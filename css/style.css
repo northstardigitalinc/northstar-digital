@@ -763,6 +763,25 @@ section { padding: clamp(5rem, 11vh, 9rem) var(--pad-x); }
 .s-moonpath--b::before { width: 6.5%; height: 6.5%; min-width: 5px; min-height: 5px; }
 @keyframes moon-spin { to { transform: rotate(1turn); } }
 
+/* cover the back arc so moons disappear behind the planet */
+.p-earth::after,
+.p-jupiter::after {
+  content: "";
+  position: absolute;
+  inset: -26%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 8;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 66%,
+    rgba(4, 6, 15, 0.98) 70%,
+    rgba(4, 6, 15, 0.98) 97%,
+    transparent 99%
+  );
+  clip-path: inset(0 0 50% 0);
+}
+
 /* ---- planet skins ---- */
 /* Earth — Website Development: blue marble, continents, cloud streaks */
 .p-earth {
