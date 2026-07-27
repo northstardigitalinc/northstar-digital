@@ -322,9 +322,8 @@
             <span class="proj-browser__url">northstardigitalinc.github.io/TadkaByHanu/</span>
           </div>
           <div class="proj-browser__viewport">
-            <iframe src="https://northstardigitalinc.github.io/TadkaByHanu/?autoplay=1"
+            <iframe data-src="https://northstardigitalinc.github.io/TadkaByHanu/?autoplay=1"
                     scrolling="no"
-                    loading="lazy"
                     allow="autoplay"
                     title="Tadka By Hanu website preview"
                     tabindex="-1"
@@ -361,9 +360,8 @@
             <span class="proj-browser__url">northstardigitalinc.github.io/PEL/</span>
           </div>
           <div class="proj-browser__viewport">
-            <iframe src="https://northstardigitalinc.github.io/PEL/index.html"
+            <iframe data-src="https://northstardigitalinc.github.io/PEL/index.html"
                     scrolling="no"
-                    loading="lazy"
                     title="PEL website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
@@ -399,9 +397,8 @@
             <span class="proj-browser__url">northstardigitalinc.github.io/401-property-services/</span>
           </div>
           <div class="proj-browser__viewport">
-            <iframe src="https://northstardigitalinc.github.io/401-property-services/"
+            <iframe data-src="https://northstardigitalinc.github.io/401-property-services/"
                     scrolling="no"
-                    loading="lazy"
                     title="401 Property Services website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
@@ -437,9 +434,8 @@
             <span class="proj-browser__url">northstardigitalinc.github.io/layalina-design-studio/</span>
           </div>
           <div class="proj-browser__viewport">
-            <iframe src="https://northstardigitalinc.github.io/layalina-design-studio/"
+            <iframe data-src="https://northstardigitalinc.github.io/layalina-design-studio/"
                     scrolling="no"
-                    loading="lazy"
                     title="Layalina Design Studio website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
@@ -463,7 +459,7 @@
         </div>
       </article>
 
-      <!-- Project 5: Accounting Firm / CFO Advisory -->
+      <!-- Project 5: Books To Capital -->
       <article class="proj-item reveal">
         <div class="proj-browser">
           <div class="proj-browser__chrome">
@@ -472,29 +468,28 @@
               <span class="proj-browser__dot"></span>
               <span class="proj-browser__dot"></span>
             </div>
-            <span class="proj-browser__url">northstardigitalinc.github.io/accounting-firm-website-v2/</span>
+            <span class="proj-browser__url">bookstocapital.com</span>
           </div>
           <div class="proj-browser__viewport">
-            <iframe src="https://northstardigitalinc.github.io/accounting-firm-website-v2/#home"
+            <iframe data-src="https://www.bookstocapital.com/#home"
                     scrolling="no"
-                    loading="lazy"
-                    title="CFO & Financial Advisory website preview"
+                    title="Books To Capital website preview"
                     tabindex="-1"
                     aria-hidden="true"></iframe>
-            <a class="proj-browser__overlay" href="https://northstardigitalinc.github.io/accounting-firm-website-v2/#home" target="_blank" rel="noopener" aria-label="Open CFO & Financial Advisory live site"></a>
+            <a class="proj-browser__overlay" href="https://www.bookstocapital.com/#home" target="_blank" rel="noopener" aria-label="Open Books To Capital live site"></a>
           </div>
         </div>
         <div class="proj-info">
           <span class="proj-info__num">W·05 — Website Development</span>
-          <h3>CFO & Financial Advisory</h3>
-          <p class="proj-info__desc">A sharp, authoritative digital presence for a Canadian financial advisory firm — designed to establish credibility, communicate premium services, and convert business owners into high-value clients.</p>
+          <h3>Books To Capital</h3>
+          <p class="proj-info__desc">A sharp, authoritative digital presence for a Canadian accounting and advisory firm — designed to establish credibility, communicate premium services, and convert business owners into high-value clients.</p>
           <div class="proj-info__tags">
             <span class="pill">Custom Design</span>
             <span class="pill">Financial Services</span>
             <span class="pill">Conversion-Focused</span>
             <span class="pill">Mobile-First</span>
           </div>
-          <a class="proj-info__link" href="https://northstardigitalinc.github.io/accounting-firm-website-v2/#home" target="_blank" rel="noopener">
+          <a class="proj-info__link" href="https://www.bookstocapital.com/#home" target="_blank" rel="noopener">
             View Live Site
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -594,5 +589,21 @@
 
 <script src="js/main.js?v=4"></script>
 <script src="js/warp.js?v=7"></script>
+<script>
+(function () {
+  var iframes = document.querySelectorAll('iframe[data-src]');
+  if (!iframes.length) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var f = entry.target;
+        f.src = f.dataset.src;
+        io.unobserve(f);
+      }
+    });
+  }, { rootMargin: '200px' });
+  iframes.forEach(function (f) { io.observe(f); });
+})();
+</script>
 </body>
 </html>
