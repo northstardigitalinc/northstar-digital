@@ -221,7 +221,7 @@ void main() {
   function layout() {
     vw = window.innerWidth;
     vh = window.innerHeight;
-    dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.25); // cap lower — halves GPU pixel budget on retina
     canvas.width = Math.round(vw * dpr);
     canvas.height = Math.round(vh * dpr);
     canvas.style.width = vw + "px";
@@ -246,8 +246,17 @@ void main() {
 
   let diskTime = 0;
   let lastT = 0;
+  let lastDraw = 0;
+  let rafId = 0;
+
+  function startLoop() { if (!rafId) rafId = requestAnimationFrame(frame); }
+  function stopLoop()  { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } }
+  document.addEventListener("visibilitychange", () => document.hidden ? stopLoop() : startLoop());
 
   function frame(now) {
+    rafId = 0;
+    if (now - lastDraw < 30) { startLoop(); return; } // ~33fps cap
+    lastDraw = now;
     const dt = lastT ? Math.min(now - lastT, 50) : 16;
     lastT = now;
 
@@ -316,9 +325,9 @@ void main() {
       window.__blackHole = null;
     }
 
-    requestAnimationFrame(frame);
+    startLoop();
   }
-  requestAnimationFrame(frame);
+  startLoop();
 
   scrollcue.addEventListener("click", () => {
     const total = space.getBoundingClientRect().height - vh;

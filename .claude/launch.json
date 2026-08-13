@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "northstar-digital",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["serve.sh"],
+      "port": 8080,
+      "autoPort": false
+    }
+  ]
+}

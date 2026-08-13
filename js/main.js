@@ -27,7 +27,7 @@
 
   function buildStars() {
     /* touch devices get roughly half the stars — GPU + battery friendly */
-    const count = Math.min(Math.floor((W * H) / (isTouch ? 6000 : 3200)), isTouch ? 240 : 520);
+    const count = Math.min(Math.floor((W * H) / (isTouch ? 8000 : 4500)), isTouch ? 160 : 360);
     // real stellar tints: white, ice-blue, cyan, champagne, warm orange
     const TINTS = [
       { rgb: "226, 232, 248", w: 0.55 },
@@ -77,8 +77,18 @@
   }
 
   let t = 0;
-  function frame() {
-    t += 0.016;
+  let lastStarDraw = 0;
+  let starRafId = 0;
+  function startStarLoop() { if (!starRafId) starRafId = requestAnimationFrame(frame); }
+  function stopStarLoop()  { if (starRafId) { cancelAnimationFrame(starRafId); starRafId = 0; } }
+  document.addEventListener("visibilitychange", () => document.hidden ? stopStarLoop() : startStarLoop());
+
+  function frame(now) {
+    starRafId = 0;
+    if (now - lastStarDraw < 30) { startStarLoop(); return; } // ~33fps cap
+    const delta = Math.min(now - lastStarDraw, 50);
+    lastStarDraw = now;
+    t += delta * 0.001;
     ctx.clearRect(0, 0, W, H);
 
     // parallax offset from mouse
@@ -141,14 +151,14 @@
       ctx.fill();
     }
 
-    requestAnimationFrame(frame);
+    startStarLoop();
   }
 
   resize();
   window.addEventListener("resize", resize);
 
   if (!prefersReduced) {
-    requestAnimationFrame(frame);
+    startStarLoop();
     // ambient shooting stars — frequent, occasionally in pairs
     (function ambient() {
       spawnShooter();
@@ -177,12 +187,21 @@
 
   /* ---------- Cursor glow + mouse parallax ---------- */
   const glow = document.querySelector(".cursor-glow");
+  let glowPending = false;
+  let glowX = 0, glowY = 0;
   document.addEventListener("mousemove", (e) => {
     mouse.x = e.clientX / window.innerWidth;
     mouse.y = e.clientY / window.innerHeight;
     if (glow && !prefersReduced) {
-      glow.style.left = e.clientX + "px";
-      glow.style.top = e.clientY + "px";
+      glowX = e.clientX; glowY = e.clientY;
+      if (!glowPending) {
+        glowPending = true;
+        requestAnimationFrame(() => {
+          glow.style.left = glowX + "px";
+          glow.style.top  = glowY + "px";
+          glowPending = false;
+        });
+      }
     }
   }, { passive: true });
 
